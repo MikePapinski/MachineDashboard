@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: '**'
+  pull_request:
+    branches: [ master ]
+    
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Run the Cake script
+      uses: cake-build/cake-action@v1
+      with:
+        script-path: build.cake
+    - name: Zip Linux x64
+      if: matrix.platform == 'ubuntu-latest'
+      run: 7z a -tzip artifacts/MachineDashboard-linux-x64-Release.zip artifacts/linux-x64/*
+    - name: Zip Linux arm64
+      if: matrix.platform == 'ubuntu-latest'
+      run: 7z a -tzip artifacts/MachineDashboard-linux-arm64-Release.zip artifacts/linux-arm64/*
+    - name: Zip MacOS x64
+      if: matrix.platform == 'macos-latest'
+      run: 7z a -tzip artifacts/MachineDashboard-macos-x64-Release.zip artifacts/osx-x64/*
+    - name: Zip MacOS arm64
+      if: matrix.platform == 'macos-latest'
+      run: 7z a -tzip artifacts/MachineDashboard-macos-arm64-Release.zip artifacts/osx-arm64/*
+    - name: Zip Windows x64
+      if: matrix.platform == 'windows-latest'
+      run: 7z a -tzip artifacts\MachineDashboard-win-x64-Release.zip artifacts\win-x64\*   
+    - name: Zip Windows arm64
+      if: matrix.platform == 'windows-latest'
+      run: 7z a -tzip artifacts\MachineDashboard-win-arm64-Release.zip artifacts\win-arm64\*    
+    - name: Upload Linux x64 artifacts
+      if: matrix.platform == 'ubuntu-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: Linux x64 Release
+        path: artifacts/MachineDashboard-linux-x64-Release.zip
+        if-no-files-found: error   
+    - name: Upload Linux arm64 artifacts
+      if: matrix.platform == 'ubuntu-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: Linux arm64 Release
+        path: artifacts/MachineDashboard-linux-arm64-Release.zip
+        if-no-files-found: error
+    - name: Upload macOS x64 artifacts
+      if: matrix.platform == 'macos-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: macOS x64 Release
+        path: artifacts/MachineDashboard-macos-x64-Release.zip
+        if-no-files-found: error
+    - name: Upload macOS arm64 artifacts
+      if: matrix.platform == 'macos-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: macOS arm64 Release
+        path: artifacts/MachineDashboard-macos-arm64-Release.zip
+        if-no-files-found: error
+    - name: Upload Windows x64 artifacts
+      if: matrix.platform == 'windows-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows x64 Release
+        path: artifacts/MachineDashboard-win-x64-Release.zip
+        if-no-files-found: error
+    - name: Upload Windows arm64 artifacts
+      if: matrix.platform == 'windows-latest'
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows arm64 Release
+        path: artifacts/MachineDashboard-win-arm64-Release.zip
+        if-no-files-found: error
