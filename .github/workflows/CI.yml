@@ -24,6 +24,13 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore .\MachineDashboard.sln
+      
+    - name: Edit property string value in appsettings.json
+      uses: benday-inc/set-property-value-in-appsettings@main
+      with:
+        pathtosettingsfile: 'src/MachineDashboard/appsettings.json'
+        keyname1: 'ConnectionString'
+        valuetoset: 'the new value'
 
     - name: Publish for Windows
       run: dotnet publish .\src\MachineDashboard --runtime win-x86 --self-contained true -c=Release /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishReadyToRun=true
