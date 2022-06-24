@@ -1,0 +1,93 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:MachineDashboard.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		Height="800" Width="800"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
+		 xmlns:styles="clr-namespace:Neumorphism.Avalonia.Styles;assembly=Neumorphism.Avalonia"
+             xmlns:assists="clr-namespace:Neumorphism.Avalonia.Styles.Assists;assembly=Neumorphism.Avalonia"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        x:Class="MachineDashboard.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="{Binding WindowHeader}">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+	
+	<Grid
+       ColumnDefinitions="Auto,*"
+       RowDefinitions="Auto,*"
+	   >
+
+		<Button Content="Add new machine to inventory." Grid.Column="0" Grid.Row="0" Width="400" Margin="5" ToolTip.Tip='Regular button without any class.' Command="{Binding NewMachine}"/>
+		<ScrollViewer
+			Grid.Row="1"
+			Margin="30"
+			Grid.Column="0">
+			<ItemsControl Items="{Binding Machines}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Button Command="{Binding $parent[ScrollViewer].DataContext.ShowMachine}" CommandParameter="{Binding }"  Width="400" Margin="5" ToolTip.Tip='Regular button without any class.'>
+
+							<StackPanel Orientation="Horizontal">
+
+								<StackPanel Margin="5">
+									<TextBlock Classes="Body2" Text="{Binding Name, Mode=TwoWay}" />
+									<TextBlock Classes="Body2" Text="{Binding Group, Mode=TwoWay}" />
+								</StackPanel>
+								<StackPanel Margin="5">
+									<TextBlock Classes="Body2" Text="{Binding Ip, Mode=TwoWay}" />
+									<TextBlock Classes="Body2" Text="{Binding Reserved, Mode=TwoWay}" />
+								</StackPanel>
+							</StackPanel>
+						</Button>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+	
+				
+				
+	
+		</ScrollViewer>
+		<Label Content="{Binding MachineHeader}" Margin="20" FontSize="20"  Grid.Column="1" Grid.Row="0"/>
+			<WrapPanel HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="1">
+				<StackPanel Orientation="Horizontal">
+					<StackPanel Orientation="Vertical">
+						
+						<TextBox UseFloatingWatermark="True" Classes="clearButton"
+								  assists:TextFieldAssist.Label="Name" Text="{Binding SelectedMachine.Name, Mode=TwoWay}"/>
+
+						<TextBox UseFloatingWatermark="True" Classes="clearButton"
+								  assists:TextFieldAssist.Label="Ip" Text="{Binding SelectedMachine.Ip, Mode=TwoWay}"/>
+
+						<TextBox UseFloatingWatermark="True" Classes="clearButton"
+								  assists:TextFieldAssist.Label="Group" Text="{Binding SelectedMachine.Group, Mode=TwoWay}"/>
+
+						<TextBox UseFloatingWatermark="True" Classes="clearButton"
+								  assists:TextFieldAssist.Label="ReservationStatus" Text="{Binding SelectedMachine.ReservationStatus, Mode=TwoWay}"/>
+
+						<TextBox UseFloatingWatermark="True" Classes="clearButton"
+								  assists:TextFieldAssist.Label="JenkinsBringOnline" Text="{Binding SelectedMachine.JenkinsBringOnline, Mode=TwoWay}"/>
+
+						<TextBox UseFloatingWatermark="True" Classes="clearButton"
+								  assists:TextFieldAssist.Label="JenkinsLabels" Text="{Binding SelectedMachine.JenkinsLabels, Mode=TwoWay}"/>
+
+						<TextBox UseFloatingWatermark="True" Classes="clearButton"
+								  assists:TextFieldAssist.Label="JenkinsDescription" Text="{Binding SelectedMachine.JenkinsDescription, Mode=TwoWay}"/>
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+							<Button Content="Save" Command="{Binding SaveMachine}" CommandParameter="{Binding SelectedMachine, Mode=TwoWay}" />
+							<Button Content="Delete" Command="{Binding DeleteMachine}" CommandParameter="{Binding SelectedMachine, Mode=TwoWay}" />
+
+						</StackPanel>
+			
+					</StackPanel>
+				</StackPanel>
+			</WrapPanel>
+
+
+
+		
+	</Grid>
+</Window>
