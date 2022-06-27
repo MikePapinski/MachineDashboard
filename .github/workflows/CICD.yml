@@ -40,7 +40,7 @@ jobs:
         valuetoset: '${{ secrets.MONGO_CONNECTION_STRING }}'
     
     - name: Run tests
-      run: dotnet test ${{ env.TEST_REPO_PATH }}/${{ env.TEST_REPO_PROJECT }} --no-build --verbosity normal --logger "${{ env.TEST_LOG_FILE_TYPE }};LogFileName=${{ env.TEST_LOG_FILE_NAME }}"
+      run: dotnet test ${{ env.TEST_REPO_PATH }}/${{ env.TEST_REPO_PROJECT }} --verbosity normal --logger "${{ env.TEST_LOG_FILE_TYPE }};LogFileName=${{ env.TEST_LOG_FILE_NAME }}"
 
     - name: Generate test report
       uses: dorny/test-reporter@v1
