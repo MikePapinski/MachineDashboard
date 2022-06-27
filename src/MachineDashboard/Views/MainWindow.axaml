@@ -39,7 +39,7 @@
 								</StackPanel>
 								<StackPanel Margin="5">
 									<TextBlock Classes="Body2" Text="{Binding Ip, Mode=TwoWay}" />
-									<TextBlock Classes="Body2" Text="{Binding Reserved, Mode=TwoWay}" />
+									<TextBlock Classes="Body2" Text="{Binding ReservationStatus, Mode=TwoWay}" />
 								</StackPanel>
 							</StackPanel>
 						</Button>

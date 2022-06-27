@@ -1,4 +1,4 @@
-name: CI
+name: CICD
 
 on:
   push:
@@ -37,10 +37,7 @@ jobs:
       with:
         pathtosettingsfile: 'src/MachineDashboard/appsettings.json'
         keyname1: 'ConnectionString'
-        valuetoset: 'the new value'
-        
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
+        valuetoset: '${{ secrets.MONGO_CONNECTION_STRING }}'
     
     - name: Run tests
       run: dotnet test ${{ env.TEST_REPO_PATH }}/${{ env.TEST_REPO_PROJECT }} --no-build --verbosity normal --logger "${{ env.TEST_LOG_FILE_TYPE }};LogFileName=${{ env.TEST_LOG_FILE_NAME }}"
@@ -56,17 +53,17 @@ jobs:
     - name: Publish for Windows
       run: dotnet publish .\src\MachineDashboard --runtime win-x86 --self-contained true -c=Release /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishReadyToRun=true
 
-    - name: Build MachineDashboard-win-x86.zip
+    - name: Build MachineDashboard-win-x86
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: MachineDashboard-win-x86.zip
+        name: MachineDashboard-win-x86
         path: ${{ env.WINDOWS_PACKAGE_PATH }}
 
     - name: Publish for Linux
       run: dotnet publish .\src\MachineDashboard --runtime linux-x64 --self-contained true -c=Release /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishReadyToRun=true
 
-    - name: Build MachineDashboard-linux-x64.zip
+    - name: Build MachineDashboard-linux-x64
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: MachineDashboard-linux-x64.zip
+        name: MachineDashboard-linux-x64
         path: ${{ env.LINUX_PACKAGE_PATH }}

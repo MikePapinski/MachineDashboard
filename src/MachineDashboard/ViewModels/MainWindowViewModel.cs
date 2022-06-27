@@ -150,6 +150,10 @@ namespace MachineDashboard.ViewModels
                         if (newMachine.Ip != machine.Ip ||
                            newMachine.Id != machine.Id ||
                            newMachine.Name != machine.Name ||
+                           newMachine.ReservationStatus != machine.ReservationStatus ||
+                           newMachine.JenkinsBringOnline != machine.JenkinsBringOnline ||
+                           newMachine.JenkinsLabels != machine.JenkinsLabels ||
+                           newMachine.JenkinsDescription != machine.JenkinsDescription ||
                            newMachine.Group != machine.Group)
                         {
                             Machines.Remove(newMachine);
