@@ -12,7 +12,7 @@ env:
   TEST_REPO_PROJECT: MachineDashboard.Test.csproj
   MAIN_REPO_PATH: ./src/MachineDashboard
   TEST_REPO_PATH: ./test/MachineDashboard.Test
-  TEST_RESULT_PATH: ./test/MachineDashboard/TestResults
+  TEST_RESULT_PATH: ./test/MachineDashboard.Test/TestResults
   TEST_LOG_FILE_NAME: test-results.trx
   TEST_LOG_FILE_TYPE: trx
 
