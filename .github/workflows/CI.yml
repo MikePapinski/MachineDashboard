@@ -31,6 +31,9 @@ jobs:
         pathtosettingsfile: 'src/MachineDashboard/appsettings.json'
         keyname1: 'ConnectionString'
         valuetoset: 'the new value'
+        
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal
 
     - name: Publish for Windows
       run: dotnet publish .\src\MachineDashboard --runtime win-x86 --self-contained true -c=Release /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:PublishReadyToRun=true
