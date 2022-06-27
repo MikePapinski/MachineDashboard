@@ -32,7 +32,7 @@ namespace MachineDashboard
                 using (Stream stream = assembly.GetManifestResourceStream("MachineDashboard.appsettings.json"))
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    string jsonFile = reader.ReadToEnd(); //Make string equal to full file
+                    string jsonFile = reader.ReadToEnd();
                     settings = JsonConvert.DeserializeObject<MongoDbSettings>(jsonFile);
                 }
 
@@ -40,12 +40,9 @@ namespace MachineDashboard
                 using (Stream stream = assembly.GetManifestResourceStream("MachineDashboard.version.json"))
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    string jsonFile2 = reader.ReadToEnd(); //Make string equal to full file
+                    string jsonFile2 = reader.ReadToEnd();
                     softwareVersion = JsonConvert.DeserializeObject<SoftwareVersion>(jsonFile2);
                 }
-
-
-
 
                 var machineRepository = new MongoRepository<Machine>(settings);
                 var machineService = new MachineService(machineRepository);

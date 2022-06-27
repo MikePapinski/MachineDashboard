@@ -54,12 +54,6 @@ namespace MachineDashboard.ViewModels
 
         async Task GetMachines()
         {
-          //  if (IsBusy)
-            //    return;
-
-            try
-            {
-              //  IsBusy = true;
                 var machines = await machineService.GetMachines();
 
                 if (Machines.Count != 0)
@@ -67,17 +61,6 @@ namespace MachineDashboard.ViewModels
 
                 foreach (var machine in machines)
                     Machines.Add(machine);
-
-            }
-            catch (Exception ex)
-            {
-               // Debug.WriteLine($"Unable to get machines: {ex.Message}");
-               // await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
-            }
-            finally
-            {
-              //  IsBusy = false;
-            }
         }
 
         public void RunShowMachine(Machine machine)
