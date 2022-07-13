@@ -46,10 +46,12 @@ namespace MachineDashboard
 
                 var machineRepository = new MongoRepository<Machine>(settings);
                 var machineService = new MachineService(machineRepository);
+                var historyRepository = new MongoRepository<HistoryEvent>(settings);
+                var historyService = new HistoryService(historyRepository);
 
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(machineService, softwareVersion),
+                    DataContext = new MainWindowViewModel(machineService, historyService, softwareVersion),
                 };
             }
 

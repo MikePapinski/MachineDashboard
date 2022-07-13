@@ -10,6 +10,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MachineDashboard.Interfaces;
+using System.Text.Json;
+using MessageBox.Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
+using MessageBoxAvaloniaEnums = MessageBox.Avalonia.Enums;
 
 namespace MachineDashboard.ViewModels
 {
@@ -23,6 +32,7 @@ namespace MachineDashboard.ViewModels
         public ReactiveCommand<Machine, Unit> DeleteMachine { get; }
 
         public ObservableCollection<Machine> Machines { get; }
+        public ObservableCollection<HistoryEvent> History { get; }
         public Machine _selectedMachine;
         private string _machineHeader;
 
@@ -37,11 +47,14 @@ namespace MachineDashboard.ViewModels
             set => this.RaiseAndSetIfChanged(ref _machineHeader, value);
         }
         MachineService machineService;
-        public MainWindowViewModel(MachineService machineService, SoftwareVersion softwareVersion)
+        HistoryService historyService;
+        public MainWindowViewModel(MachineService machineService, HistoryService historyService, SoftwareVersion softwareVersion)
         {
             _softwareVersion = softwareVersion;
             Machines = new ObservableCollection<Machine>();
+            History = new ObservableCollection<HistoryEvent>();
             this.machineService = machineService;
+            this.historyService = historyService;
             GetMachines();
             Task task = Task.Run((Action)MyFunction);
             SelectedMachine = new Machine();
@@ -89,17 +102,49 @@ namespace MachineDashboard.ViewModels
 
         public void RunSaveMachine(Machine machine)
         {
-            if (Machines.Where(x => x.Id == machine.Id).FirstOrDefault() != default)
+             var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxStandardWindow(
+                new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBoxAvaloniaEnums.ButtonEnum.OkCancel,
+                    ContentTitle = "title",
+                    ContentHeader = "header",
+                    ContentMessage = "Message",
+                    WindowIcon = new WindowIcon("icon-rider.png")
+                });
+            var rslt = messageBoxStandardWindow.Show();
+            //await messageBoxMarkdownWindow.ShowDialog(this);
+
+            var findMachine = Machines.Where(x => x.Id == machine.Id).FirstOrDefault();
+            if (findMachine != default)
             {
                 machineService.SaveMachine(machine);
+                historyService.AddHistory( new HistoryEvent()
+                {
+                    Action = "Update",
+                    Before = JsonSerializer.Serialize<Machine>(findMachine),
+                    After = JsonSerializer.Serialize<Machine>(machine),
+                });
                 return;
             }
+            
             machineService.AddMachine(machine);
+            historyService.AddHistory( new HistoryEvent()
+            {
+                Action = "Add",
+                Before = "",
+                After = JsonSerializer.Serialize<Machine>(machine),
+            });
         }
 
         public void RunDeleteMachine(Machine machine)
         {
             machineService.RemoveMachine(machine);
+            historyService.AddHistory( new HistoryEvent()
+            {
+                Action = "Delete",
+                Before =  JsonSerializer.Serialize<Machine>(machine),
+                After = "",
+            });
         }
 
 
@@ -109,6 +154,7 @@ namespace MachineDashboard.ViewModels
             while (true)
             {
                 var machines = await machineService.GetMachines();
+                var history = await historyService.GetHistory();
 
                 // Check for delete
                 foreach (var machineObservable in Machines.ToList())
@@ -120,7 +166,7 @@ namespace MachineDashboard.ViewModels
                     }
                 }
 
-                // Check for add or update
+                // Check for add or update for machine
                 foreach (var machine in machines)
                 {
                     var newMachine = Machines.FirstOrDefault(x => x.Id == machine.Id);
@@ -144,6 +190,17 @@ namespace MachineDashboard.ViewModels
                         }
                     }
                 }
+
+                // Check for add for history
+                foreach (var historyEvent in history)
+                {
+                    var newHistory = History.FirstOrDefault(x => x.Id == historyEvent.Id);
+                    if (newHistory == null)
+                    {
+                        History.Add(historyEvent);
+                    }
+                }
+
                 Thread.Sleep(1000);
             }
         }
